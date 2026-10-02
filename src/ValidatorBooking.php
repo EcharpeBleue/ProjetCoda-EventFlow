@@ -1,7 +1,7 @@
 <?php
     declare(strict_types=1);
 
-    interface BookingValidator
+    interface ValidatorBooking
     {
         public function validate(Booking $booking): void;
     }

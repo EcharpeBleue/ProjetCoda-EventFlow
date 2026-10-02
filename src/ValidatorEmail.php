@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-    final class BookingEmail implements BookingValidator
+    final class ValidatorEmail implements ValidatorBooking
     {
     public function validate(Booking $booking): void
     {

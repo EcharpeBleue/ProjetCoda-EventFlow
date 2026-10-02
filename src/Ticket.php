@@ -9,5 +9,8 @@ final class Ticket
         public string $label,
         public float $price
     ) {
+        if (!is_finite($price) || $price <= 0) {
+            throw new InvalidArgumentException('The ticket price must be greater than 0 euro .');
+        }
     }
 }

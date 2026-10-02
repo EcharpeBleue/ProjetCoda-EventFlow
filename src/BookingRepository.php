@@ -4,6 +4,6 @@
 final class BookingRepository
 {
     public function save (Booking $booking, float $total): void {
-        echo "Booking saved with total: $total";
+        echo "Booking saved with total: $total" . PHP_EOL;
     }
 }

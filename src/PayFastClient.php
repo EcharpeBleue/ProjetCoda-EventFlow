@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-final class StripeClient implements GatewayPayment
+final class PayFastClient implements GatewayPayment
 {
     public function charge(float $amount): string
     {
@@ -10,6 +10,6 @@ final class StripeClient implements GatewayPayment
             throw new RuntimeException('Invalid amount');
         }
 
-        return 'stripe_' . number_format($amount, 2, '.', '');
+        return 'payfast_' . number_format($amount, 2, '.', '');
     }
 }

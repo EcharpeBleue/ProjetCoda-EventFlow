@@ -18,7 +18,7 @@ Ensuite, on instancie un nouveau BookingService, et on calcule le total demandé
 |---|---|---|---|
 | 1 | la classe BookingService a plusieurs responsabilités, le fichier est ainsi très long | responsabilité/lisiblité | code pas très claire  |
 | 2 | La classe AnalycticsClient, ainsi que sa méthode track() ne sont jamais appelées | testabilitée | fonctionnalitée présente mais jamais utilisée, code mort |
-| 3 | L'interface PayFastSdk ne fournit pas la même interface que le code actuel | autre(non fonctionnel) | Code mort |
+| 3 | La classe PayFastSdk ne fournit pas la même interface que le code actuel | autre(non fonctionnel) | Code mort |
 | 4 | Code dans BookingService répétitif, donc refactorable | duplication | Entretenabilité de la classe difficile |
 | 5 | tikets accepte les negatif | validation des données |fraude
 | 6 | La méthode confirm() de BookingService force le moyent de paiement Stripe via une affectation dans les paramètres ; cette manière de faire ne correspond pas vraiment à une règle métier | règle métier | le système de WhiteList ici ne correspond pas au fonctionnement d'un système de paiement |
