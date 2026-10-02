@@ -22,22 +22,22 @@ final class BookingService
             //d'abord le VIP et apres le pass 3days
 
 
-        $DiscountVip = new DiscountVip();
-        $total = $DiscountVip->applyDiscount($total, $booking->customer);
+        $discountVip = new DiscountVip();
+        $total = $discountVip->applyDiscount($total, $booking->customer);
 
-        $DiscountPass = new DiscountPass();
-        $total = $DiscountPass->applyDiscount($total, $booking);
+        $discountPass = new DiscountPass();
+        $total = $discountPass->applyDiscount($total, $booking);
 
 
-        // JP : Refactorisation à faire ici pour utiliser un repository et ne pas faire d'echo dans le service
+        // JP : Refactorisation à faire ici
         if ($paymentMethod === 'stripe') {
             $stripe = new StripeClient();
-            $transactionId = $stripe->charge($total);
+            $transactionId = $stripe->charge($total, (string) $booking->id);
             echo "PAYMENT {$transactionId}" . PHP_EOL;
         } elseif ($paymentMethod === 'payfast') {
             $payFastSdk = new PayFastSdk();
             $adapter = new AdapterPayFast($payFastSdk);
-            $transactionId = $adapter->charge($total);
+            $transactionId = $adapter->charge($total, (string) $booking->id);
             echo "PAYMENT {$transactionId}" . PHP_EOL;
         } else {
             throw new RuntimeException('Unknown payment method');

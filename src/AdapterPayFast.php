@@ -15,7 +15,7 @@ final class AdapterPayFast implements GatewayPayment
     {
         $payload = [
             'reference' => $reference,
-            // pour convertir le montant en centimes, on multiplie par 100 et on force le cast de type en int avec () devant la variable.
+            // pour convertir le montant en centimes, on multiplie par 100 et on force le cast de type en int avec (type) devant la variable.
             'amount_cents' => (int)round(($amount * 100)),
             'currency' => 'EUR',
         ];

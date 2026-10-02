@@ -20,7 +20,7 @@ $dayTicket = new Ticket(
 $booking = new Booking(
     id: 1001,
     customer: $customer,
-    passType: 'day'
+    passType: '3days'
 );
 
 $booking->addItem(new BookingItem($dayTicket, 2));
