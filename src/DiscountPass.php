@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 //si on prend un pass de 3 jour on benefici d'une remise de 20 euro
 
-final class DiscountPass
+final class DiscountPass implements DiscountInterface
 {
 public function applyDiscount(float $total , Booking $booking): float
 {   

@@ -22,18 +22,22 @@ final class BookingService
             //d'abord le VIP et apres le pass 3days
 
 
-        $discountVip = new DiscountVip();
-        $total = $discountVip->applyDiscount($total, $booking->customer);
+        $discountApplicator = [
+            new DiscountVip(),
+            new DiscountPass()
+        ];
 
-        $discountPass = new DiscountPass();
-        $total = $discountPass->applyDiscount($total, $booking);
+        foreach ($discountApplicator as $discount) {
+            $total = $discount->applyDiscount($total, $booking);
+        }
 
-
-        // JP : Refactorisation à faire ici
+        // JP : Refactorisation à faire ici dans une classe dédiée
+        $paymentStartedAt = hrtime(true);
         if ($paymentMethod === 'stripe') {
             $stripe = new StripeClient();
             $transactionId = $stripe->charge($total, (string) $booking->id);
             echo "PAYMENT {$transactionId}" . PHP_EOL;
+            
         } elseif ($paymentMethod === 'payfast') {
             $payFastSdk = new PayFastSdk();
             $adapter = new AdapterPayFast($payFastSdk);
@@ -42,7 +46,8 @@ final class BookingService
         } else {
             throw new RuntimeException('Unknown payment method');
         }
-
+        $paymentDurationMs = (hrtime(true) - $paymentStartedAt) / 1_000_000;
+        echo "payement duration: " . number_format($paymentDurationMs, 2) . " ms" . PHP_EOL;
         $booking->status = 'confirmed';
 
         echo "SQL INSERT booking={$booking->id} total={$total} status={$booking->status}" . PHP_EOL;

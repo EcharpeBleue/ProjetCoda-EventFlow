@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
-final class DiscountVip
+final class DiscountVip implements DiscountInterface
 {
-    public function applyDiscount( float $total , customer $customer): float
+    public function applyDiscount( float $total , Booking $booking): float
     {
-        if ($customer->type === 'vip') {
+        if ($booking->customer->type === 'vip') {
 
     if ($total < 100) {
         $total = $total * 0.95;
