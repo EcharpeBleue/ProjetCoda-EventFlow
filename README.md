@@ -27,3 +27,6 @@ Les tests fournis décrivent le comportement initial. Certaines règles doivent 
 Ne modifiez pas `src/PayFastSdk.php`.
 
 Le projet ne contient volontairement aucun framework ni dépendance externe.
+## Auteurs
+Jean-Paul Allou
+Mohamed-Amine Mejjiou

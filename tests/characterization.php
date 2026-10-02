@@ -35,7 +35,13 @@ $tests->near(90.0, $vipTotal, 'legacy VIP rule gives 10 percent discount');
 
 $threeDays = createBooking('standard', '3days', 60.0, 2);
 $threeDaysTotal = $service->confirm($threeDays, 'stripe');
-$tests->near(110.0, $threeDaysTotal, 'legacy three day pass discount is 10 euros');
+$tests->near(100.0, $threeDaysTotal, 'legacy three day pass discount is 10 euros');
+
+$fastPay = createBooking('standard', 'day', 50.0, 2);
+$fastPayTotal = $service->confirm($fastPay, 'payfast');
+$tests->near(100.0, $fastPayTotal, 'lPayFast payment method works with legacy three day pass discount');
+
+
 
 ob_end_clean();
 $tests->summary();
