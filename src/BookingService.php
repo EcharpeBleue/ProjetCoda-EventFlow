@@ -4,51 +4,26 @@ declare(strict_types=1);
 
 final class BookingService
 {   
-    public function __construct(
-        //ici le bookingValidator sert à valider les données du booking avant de procéder à la confirmation. 
-        private BookingValidator $bookingValidator, 
-        //le bookingRepository est responsable de la persistance des données du booking dans la base de données.
-        private BookingRepository $bookingRepository,
-
-    ){}
+    
 
     public function confirm(Booking $booking, string $paymentMethod = 'stripe'): float
     {
-        if (count($booking->items) === 0) {
-            throw new RuntimeException('Empty booking');
-        }
+        $bookingValidator = [
+            new BookingEmail(),
+            new BookingQuantity(),
+        ];
+        $bookingValidator = array_map(fn(BookingValidator $validator) => $validator->validate($booking), $bookingValidator);
 
-        if (!filter_var($booking->customer->email, FILTER_VALIDATE_EMAIL)) {
-            throw new RuntimeException('Invalid email');
-        }
-    
-        // JP: ^^ 2 throw new RuntimeException -> désuet, refactoring à faire pour les remplacer par des classes dédiées (InvalidBookingException, InvalidEmailException, etc.)
-        // JP : Une interface pourrait permettre de regrouper ces exceptions et de les gérer de manière plus cohérente.
-        // JP : Une interface InvalidException ?
-
-        $total = 0.0;
-
-        foreach ($booking->items as $item) {
-            if ($item->quantity <= 0) {
-                throw new RuntimeException('Invalid quantity');
-            }
-
-            $total += $item->ticket->price * $item->quantity;
-        }
-
-        // JP : Ancienne règle de calcul du total, à refactoriser pour externaliser la logique de calcul dans une classe dédiée (BookingCalculator) et ainsi séparer les responsabilités.
-
-        // Ancienne règle VIP : remise fixe de 10 %.
-        if ($booking->customer->type === 'vip') {
-            $total *= 0.90;
-        }
-
-        // JP : Ancienne règle VIP : remise fixe de 10%. Etant donnée que cette fonctionnalité est amenée à évoluer, je suggère de créer une classe dédiée.
+        $calculator = new BookingCalculator();
+        $total = $calculator->calculateTotal($booking->items);
 
         // Ancienne règle Pass 3 jours : remise fixe de 10 euros.
-        if ($booking->passType === '3days') {
-            $total -= 10.0;
-        }
+        // if ($booking->passType === '3days') {
+        //     $total -= 10.0;
+        // }
+
+        $bookingVIP = new BookingVip();
+        $total = $bookingVIP->applyDiscount($total, $booking->customer);
 
         if ($paymentMethod === 'stripe') {
             $stripe = new StripeClient();
